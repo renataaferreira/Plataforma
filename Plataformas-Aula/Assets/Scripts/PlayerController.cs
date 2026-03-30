@@ -53,6 +53,41 @@ public class PlayerController : MonoBehaviour
     }
 
     /// <summary>
+    /// No-argument overload to safely handle cases where PlayerInput (Send Messages)
+    /// or other systems may attempt to invoke OnMove without parameters.
+    /// Keeps existing input state unchanged or resets it if you prefer.
+    /// </summary>
+    public void OnMove()
+    {
+        // Intentionally left blank to avoid MissingMethodException when invoked
+        // without parameters. Do not change moveInput here so that accidental
+        // empty calls don't stop ongoing movement; change to moveInput = Vector2.zero;
+        // if you prefer to reset input on empty calls.
+    }
+
+    /// <summary>
+    /// Overload for PlayerInput when using the "Send Messages" behavior or when
+    /// the runtime sends an InputValue parameter named OnMove. This prevents
+    /// MissingMethodException when PlayerInput attempts to invoke OnMove(InputValue).
+    /// </summary>
+    /// <param name="value">InputValue wrapper provided by the Input System</param>
+    public void OnMove(InputValue value)
+    {
+        moveInput = value.Get<Vector2>();
+    }
+
+    /// <summary>
+    /// Overload for the C# event / callback signature: OnMove(InputAction.CallbackContext).
+    /// Useful if the PlayerInput component is configured to call C# events or if you
+    /// subscribe via code.
+    /// </summary>
+    /// <param name="context">Callback context from the Input System</param>
+    public void OnMove(UnityEngine.InputSystem.InputAction.CallbackContext context)
+    {
+        moveInput = context.ReadValue<Vector2>();
+    }
+
+    /// <summary>
     /// Alternative binding signature if you prefer to connect an InputValue.
     /// PlayerInput UnityEvent can also call this if you choose InputValue.
     /// </summary>
